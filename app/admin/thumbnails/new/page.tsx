@@ -13,20 +13,44 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { createClientSupabaseClient } from "@/lib/supabase"
 import { categories } from "@/lib/categories"
+
+// YouTube helper
+async function fetchYoutubeInfo(url: string) {
+  const res = await fetch(`/api/youtube?url=${encodeURIComponent(url)}`)
+  if (!res.ok) {
+    throw new Error("YouTube情報の取得に失敗しました")
+  }
+  return (await res.json()) as { title: string; imageUrl: string }
+}
 import Link from "next/link"
 
 export default function NewThumbnailPage() {
   const [title, setTitle] = useState("")
+  const [youtubeUrl, setYoutubeUrl] = useState("")
   const [imageUrl, setImageUrl] = useState("")
   const [category, setCategory] = useState("")
   const [content, setContent] = useState("")
   const [views, setViews] = useState("0")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [fetching, setFetching] = useState(false)
   const [success, setSuccess] = useState(false)
 
   const router = useRouter()
   const supabase = createClientSupabaseClient()
+
+  const handleFetchInfo = async () => {
+    try {
+      setFetching(true)
+      const data = await fetchYoutubeInfo(youtubeUrl)
+      setTitle(data.title)
+      setImageUrl(data.imageUrl)
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setFetching(false)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -105,6 +129,25 @@ export default function NewThumbnailPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="youtubeUrl">YouTube動画URL</Label>
+              <div className="flex space-x-2">
+                <Input
+                  id="youtubeUrl"
+                  value={youtubeUrl}
+                  onChange={(e) => setYoutubeUrl(e.target.value)}
+                  placeholder="https://www.youtube.com/watch?v=..."
+                />
+                <Button
+                  type="button"
+                  onClick={handleFetchInfo}
+                  disabled={fetching || !youtubeUrl}
+                >
+                  {fetching ? "取得中..." : "情報取得"}
+                </Button>
+              </div>
+              <p className="text-xs text-gray-500">URLを入力して情報取得を押すとタイトルとサムネイルを自動入力します。</p>
+            </div>
             <div className="space-y-2">
               <Label htmlFor="title">タイトル *</Label>
               <Input
