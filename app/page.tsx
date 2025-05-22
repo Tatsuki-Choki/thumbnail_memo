@@ -76,16 +76,21 @@ export default function Home() {
               <span className="w-2 h-6 bg-red-600 mr-2 rounded-sm"></span>
               トレンド
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
               {trendingContent.map((content) => (
-                <Link key={content.id} href={`/post/${content.id}`} className="group">
+                <Link
+                  key={content.id}
+                  href={`/post/${content.id}`}
+                  className="group mb-4 break-inside-avoid"
+                >
                   <div className="overflow-hidden rounded-lg border border-gray-200 transition-all group-hover:shadow-md">
-                    <div className="relative h-36 overflow-hidden">
+                    <div className="relative">
                       <Image
                         src={content.image || "/placeholder.svg"}
                         alt={content.title}
-                        fill
-                        className="object-cover transition-transform group-hover:scale-105"
+                        width={600}
+                        height={400}
+                        className="w-full object-cover transition-transform group-hover:scale-105"
                       />
                       <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
                         {content.views}回視聴
