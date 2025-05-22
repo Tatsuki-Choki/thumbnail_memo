@@ -188,7 +188,6 @@ export default function PostPage({ params }: { params: { id: string } }) {
             <h1 className="text-2xl md:text-3xl font-bold mb-4">{post.title}</h1>
             <div className="text-sm text-gray-500 mb-6 flex items-center justify-between">
               <span>{formatDate(post.date)}</span>
-              <span>{post.views}回視聴</span>
             </div>
 
             <div className="relative aspect-video mb-6 overflow-hidden rounded-lg">
