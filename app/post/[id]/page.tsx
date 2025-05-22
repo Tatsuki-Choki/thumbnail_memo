@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Sidebar } from "@/components/sidebar"
+import { getCategorySlug } from "@/lib/categories"
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString)
@@ -239,33 +240,3 @@ export default function PostPage({ params }: { params: { id: string } }) {
   )
 }
 
-function getCategorySlug(categoryName: string): string {
-  const categoryMap: Record<string, string> = {
-    チャレンジ・やってみた: "challenge",
-    レビュー・紹介・解説: "review",
-    ゲーム・実況: "game",
-    Vtuber: "vtuber",
-    LIVE・ラジオ: "live",
-    社会・会社: "society",
-    ビジネス・教養: "business",
-    ベビー・子供・キッズ・教育: "kids",
-    Web・IT・テクノロジー: "web",
-    デザイン・ものづくり: "design",
-    暮らし・経費・インテリア: "lifestyle",
-    Vlog・日常: "vlog",
-    音楽・ミュージック: "music",
-    漫画・アニメ・本: "anime",
-    美容・ファッション: "fashion",
-    エンタメ・バラエティ: "entertainment",
-    映画・テレビ・芸能: "tv",
-    料理・グルメ: "food",
-    植物・ペット・生物: "pets",
-    カルチャー・芸術: "culture",
-    スポーツ・健康・運動: "sports",
-    病院・医療: "medical",
-    科学・研究: "science",
-    旅行・観光: "travel",
-  }
-
-  return categoryMap[categoryName] || "category"
-}

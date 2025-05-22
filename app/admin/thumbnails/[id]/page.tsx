@@ -12,35 +12,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { createClientSupabaseClient } from "@/lib/supabase"
+import { categories } from "@/lib/categories"
 import Link from "next/link"
-
-// カテゴリーリスト
-const categories = [
-  { id: "challenge", name: "チャレンジ・やってみた" },
-  { id: "review", name: "レビュー・紹介・解説" },
-  { id: "game", name: "ゲーム・実況" },
-  { id: "vtuber", name: "Vtuber" },
-  { id: "live", name: "LIVE・ラジオ" },
-  { id: "society", name: "社会・会社" },
-  { id: "business", name: "ビジネス・教養" },
-  { id: "kids", name: "ベビー・子供・キッズ・教育" },
-  { id: "web", name: "Web・IT・テクノロジー" },
-  { id: "design", name: "デザイン・ものづくり" },
-  { id: "lifestyle", name: "暮らし・経費・インテリア" },
-  { id: "vlog", name: "Vlog・日常" },
-  { id: "music", name: "音楽・ミュージック" },
-  { id: "anime", name: "漫画・アニメ・本" },
-  { id: "fashion", name: "美容・ファッション" },
-  { id: "entertainment", name: "エンタメ・バラエティ" },
-  { id: "tv", name: "映画・テレビ・芸能" },
-  { id: "food", name: "料理・グルメ" },
-  { id: "pets", name: "植物・ペット・生物" },
-  { id: "culture", name: "カルチャー・芸術" },
-  { id: "sports", name: "スポーツ・健康・運動" },
-  { id: "medical", name: "病院・医療" },
-  { id: "science", name: "科学・研究" },
-  { id: "travel", name: "旅行・観光" },
-]
 
 export default function EditThumbnailPage({ params }: { params: { id: string } }) {
   const [title, setTitle] = useState("")

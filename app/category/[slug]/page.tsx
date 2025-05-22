@@ -1,5 +1,6 @@
 import { Sidebar } from "@/components/sidebar"
 import { ThumbnailGrid } from "@/components/thumbnail-grid"
+import { getCategoryName } from "@/lib/categories"
 
 export default function CategoryPage({ params }: { params: { slug: string } }) {
   return (
@@ -13,35 +14,4 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
       </main>
     </div>
   )
-}
-
-function getCategoryName(slug: string): string {
-  const categories: Record<string, string> = {
-    challenge: "チャレンジ・やってみた",
-    review: "レビュー・紹介・解説",
-    game: "ゲーム・実況",
-    vtuber: "Vtuber",
-    live: "LIVE・ラジオ",
-    society: "社会・会社",
-    business: "ビジネス・教養",
-    kids: "ベビー・子供・キッズ・教育",
-    web: "Web・IT・テクノロジー",
-    design: "デザイン・ものづくり",
-    lifestyle: "暮らし・経費・インテリア",
-    vlog: "Vlog・日常",
-    music: "音楽・ミュージック",
-    anime: "漫画・アニメ・本",
-    fashion: "美容・ファッション",
-    entertainment: "エンタメ・バラエティ",
-    tv: "映画・テレビ・芸能",
-    food: "料理・グルメ",
-    pets: "植物・ペット・生物",
-    culture: "カルチャー・芸術",
-    sports: "スポーツ・健康・運動",
-    medical: "病院・医療",
-    science: "科学・研究",
-    travel: "旅行・観光",
-  }
-
-  return categories[slug] || slug
 }
