@@ -138,9 +138,6 @@ export function ThumbnailGrid() {
                 height={400}
                 className="w-full object-cover transition-transform group-hover:scale-105"
               />
-              <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
-                {thumbnail.views}回視聴
-              </div>
             </div>
             <div className="p-3">
               <p className="text-sm font-medium line-clamp-2">{thumbnail.title}</p>
