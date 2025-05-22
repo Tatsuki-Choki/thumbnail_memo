@@ -28,3 +28,8 @@ Continue building your app on:
 2. Deploy your chats from the v0 interface
 3. Changes are automatically pushed to this repository
 4. Vercel deploys the latest version from this repository
+
+## Environment Variables
+
+Create a `.env` file based on `.env.example` and set your Supabase credentials.
+To enable YouTube thumbnail fetching, provide your `YOUTUBE_API_KEY`.
