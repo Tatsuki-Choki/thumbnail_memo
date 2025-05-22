@@ -122,16 +122,21 @@ const thumbnails = [
 
 export function ThumbnailGrid() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="columns-1 sm:columns-2 lg:columns-3 gap-6">
       {thumbnails.map((thumbnail) => (
-        <Link key={thumbnail.id} href={`/post/${thumbnail.id}`} className="group">
+        <Link
+          key={thumbnail.id}
+          href={`/post/${thumbnail.id}`}
+          className="group mb-6 break-inside-avoid"
+        >
           <div className="overflow-hidden rounded-lg border border-gray-200 transition-all group-hover:shadow-md">
-            <div className="relative h-48 overflow-hidden">
+            <div className="relative">
               <Image
                 src={thumbnail.image || "/placeholder.svg"}
                 alt={thumbnail.title}
-                fill
-                className="object-cover transition-transform group-hover:scale-105"
+                width={600}
+                height={400}
+                className="w-full object-cover transition-transform group-hover:scale-105"
               />
               <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
                 {thumbnail.views}回視聴

@@ -207,16 +207,21 @@ export default function PostPage({ params }: { params: { id: string } }) {
           {relatedPosts.length > 0 && (
             <div className="mt-10">
               <h2 className="text-xl font-bold mb-4">関連コンテンツ</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
                 {relatedPosts.map((related) => (
-                  <Link key={related.id} href={`/post/${related.id}`} className="group">
+                  <Link
+                    key={related.id}
+                    href={`/post/${related.id}`}
+                    className="group mb-4 break-inside-avoid"
+                  >
                     <div className="overflow-hidden rounded-lg border border-gray-200 transition-all group-hover:shadow-md">
-                      <div className="relative h-36 overflow-hidden">
+                      <div className="relative">
                         <Image
                           src={related.image || "/placeholder.svg"}
                           alt={related.title}
-                          fill
-                          className="object-cover transition-transform group-hover:scale-105"
+                          width={600}
+                          height={400}
+                          className="w-full object-cover transition-transform group-hover:scale-105"
                         />
                       </div>
                       <div className="p-3">
