@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { createClientSupabaseClient } from "@/lib/supabase"
 import { categories } from "@/lib/categories"
+import Link from "next/link"
 
 // YouTube helper
 async function fetchYoutubeInfo(url: string) {
@@ -22,7 +23,6 @@ async function fetchYoutubeInfo(url: string) {
   }
   return (await res.json()) as { title: string; imageUrl: string }
 }
-import Link from "next/link"
 
 export default function NewThumbnailPage() {
   const [title, setTitle] = useState("")
@@ -37,11 +37,11 @@ export default function NewThumbnailPage() {
   const [success, setSuccess] = useState(false)
 
   const router = useRouter()
-  const supabase = createClientSupabaseClient()
 
   const handleFetchInfo = async () => {
     try {
       setFetching(true)
+      setError(null)
       const data = await fetchYoutubeInfo(youtubeUrl)
       setTitle(data.title)
       setImageUrl(data.imageUrl)
@@ -64,35 +64,44 @@ export default function NewThumbnailPage() {
         throw new Error("タイトル、画像URL、カテゴリーは必須項目です。")
       }
 
-      // サムネイルをデータベースに追加
-      const { error } = await supabase.from("thumbnails").insert([
-        {
-          title,
-          image_url: imageUrl,
-          category,
-          content,
-          views: Number.parseInt(views) || 0,
-        },
-      ])
+      // Supabaseクライアントの初期化を試行
+      try {
+        const supabase = createClientSupabaseClient()
 
-      if (error) {
-        throw error
+        // サムネイルをデータベースに追加
+        const { error } = await supabase.from("thumbnails").insert([
+          {
+            title,
+            image_url: imageUrl,
+            category,
+            content,
+            views: Number.parseInt(views) || 0,
+          },
+        ])
+
+        if (error) {
+          throw error
+        }
+
+        setSuccess(true)
+
+        // フォームをリセット
+        setTitle("")
+        setYoutubeUrl("")
+        setImageUrl("")
+        setCategory("")
+        setContent("")
+        setViews("0")
+
+        // 3秒後にサムネイル一覧ページにリダイレクト
+        setTimeout(() => {
+          router.push("/admin/thumbnails")
+          router.refresh()
+        }, 3000)
+      } catch (supabaseError: any) {
+        console.error("Supabase操作エラー:", supabaseError)
+        throw new Error("データベースへの保存に失敗しました。管理者に連絡してください。")
       }
-
-      setSuccess(true)
-
-      // フォームをリセット
-      setTitle("")
-      setImageUrl("")
-      setCategory("")
-      setContent("")
-      setViews("0")
-
-      // 3秒後にサムネイル一覧ページにリダイレクト
-      setTimeout(() => {
-        router.push("/admin/thumbnails")
-        router.refresh()
-      }, 3000)
     } catch (error: any) {
       setError(error.message || "サムネイルの追加に失敗しました。")
     } finally {
@@ -138,15 +147,13 @@ export default function NewThumbnailPage() {
                   onChange={(e) => setYoutubeUrl(e.target.value)}
                   placeholder="https://www.youtube.com/watch?v=..."
                 />
-                <Button
-                  type="button"
-                  onClick={handleFetchInfo}
-                  disabled={fetching || !youtubeUrl}
-                >
+                <Button type="button" onClick={handleFetchInfo} disabled={fetching || !youtubeUrl}>
                   {fetching ? "取得中..." : "情報取得"}
                 </Button>
               </div>
-              <p className="text-xs text-gray-500">URLを入力して情報取得を押すとタイトルとサムネイルを自動入力します。</p>
+              <p className="text-xs text-gray-500">
+                URLを入力して情報取得を押すとタイトルとサムネイルを自動入力します。
+              </p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="title">タイトル *</Label>

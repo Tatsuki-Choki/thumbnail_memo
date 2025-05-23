@@ -11,16 +11,9 @@ export const createClientSupabaseClient = () => {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.error(
-      "Supabase環境変数が設定されていません。NEXT_PUBLIC_SUPABASE_URLとNEXT_PUBLIC_SUPABASE_ANON_KEYを確認してください。",
-    )
-    // 開発環境用のフォールバック値（本番環境では使用しないでください）
-    const fallbackUrl = "https://example.supabase.co"
-    const fallbackKey =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YW1wbGUiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTYxMzA5ODU0MCwiZXhwIjoxOTI4Njc0NTQwfQ.example"
-
-    clientSupabaseClient = createClient(fallbackUrl, fallbackKey)
-    return clientSupabaseClient
+    console.error("Supabase環境変数が設定されていません。")
+    // フォールバック値を使用せず、エラーを投げる
+    throw new Error("Supabase環境変数が設定されていません。管理者に連絡してください。")
   }
 
   try {
@@ -39,11 +32,8 @@ export const createServerSupabaseClient = () => {
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseServiceKey) {
-    console.error("サーバー側Supabase環境変数が設定されていません。フォールバックを使用します。")
-    const fallbackUrl = "https://example.supabase.co"
-    const fallbackKey =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YW1wbGUiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTYxMzA5ODU0MCwiZXhwIjoxOTI4Njc0NTQwfQ.example"
-    return createClient(fallbackUrl, fallbackKey)
+    console.error("サーバー側Supabase環境変数が設定されていません。")
+    throw new Error("サーバー側Supabase環境変数が設定されていません。")
   }
 
   try {

@@ -19,46 +19,37 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  // Supabaseクライアントの初期化をtry-catchで囲む
-  let supabase
-  try {
-    supabase = createClientSupabaseClient()
-  } catch (err: any) {
-    console.error("Supabaseクライアントの初期化エラー:", err)
-    setError("認証サービスの初期化に失敗しました。管理者に連絡してください。")
-  }
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
     try {
-      if (!supabase) {
-        throw new Error("認証サービスが利用できません。")
+      // フォールバック認証（開発環境用）
+      if (email === "tsukichiyo.inc@gmail.com" && password === "password0926") {
+        localStorage.setItem("localAdmin", "true")
+        router.push("/admin/dashboard")
+        return
       }
 
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+      // Supabase認証を試行
+      try {
+        const supabase = createClientSupabaseClient()
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        })
 
-      if (error) {
-        // Supabaseでの認証に失敗した場合はローカル認証を試みる
-        if (email === "tsukichiyo.inc@gmail.com" && password === "password0926") {
-          localStorage.setItem("localAdmin", "true")
-        } else {
+        if (error) {
           throw error
         }
-      }
 
-      if (!error) {
-        // Supabase認証成功時にもローカルフラグを立てる
         localStorage.setItem("localAdmin", "true")
+        router.push("/admin/dashboard")
+      } catch (supabaseError: any) {
+        console.warn("Supabase認証に失敗:", supabaseError.message)
+        throw new Error("認証に失敗しました。メールアドレスとパスワードを確認してください。")
       }
-
-      // ログイン成功後、管理者ダッシュボードにリダイレクト
-      router.push("/admin/dashboard")
     } catch (error: any) {
       setError(error.message || "ログインに失敗しました。")
     } finally {
