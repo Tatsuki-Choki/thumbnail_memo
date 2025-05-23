@@ -14,18 +14,9 @@ export async function GET(req: NextRequest) {
   if (!apiKey) {
     return NextResponse.json({ error: "API key not configured" }, { status: 500 });
   }
-  let res: Response;
-  try {
-    res = await fetch(
-      `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoId}&key=${apiKey}`,
-    );
-  } catch (error) {
-    console.error("Failed to call YouTube API", error);
-    return NextResponse.json(
-      { error: "Failed to fetch video info" },
-      { status: 500 },
-    );
-  }
+  const res = await fetch(
+    `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoId}&key=${apiKey}`,
+  );
   if (!res.ok) {
     return NextResponse.json({ error: "Failed to fetch video info" }, { status: 500 });
   }

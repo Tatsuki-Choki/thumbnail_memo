@@ -11,40 +11,27 @@ function formatDate(dateString: string): string {
 
 export default async function PostPage({ params }: { params: { id: string } }) {
   const supabase = createServerSupabaseClient()
-  let post: any
-  try {
-    const { data, error } = await supabase
-      .from("thumbnails")
-      .select("*")
-      .eq("id", params.id)
-      .single()
+  const { data: post } = await supabase
+    .from("thumbnails")
+    .select("*")
+    .eq("id", params.id)
+    .single()
 
-    if (error) {
-      throw error
-    }
-    post = data
-  } catch (e) {
-    console.error("Failed to fetch post", e)
+  if (!post) {
     return (
       <div className="p-6">
-        <p>投稿の取得に失敗しました。</p>
+        <p>投稿が見つかりませんでした。</p>
       </div>
     )
   }
 
-  let relatedPosts: any[] = []
-  try {
-    const { data } = await supabase
-      .from("thumbnails")
-      .select("*")
-      .eq("category", post.category)
-      .neq("id", post.id)
-      .order("created_at", { ascending: false })
-      .limit(3)
-    relatedPosts = data || []
-  } catch (e) {
-    console.error("Failed to fetch related posts", e)
-  }
+  const { data: relatedPosts } = await supabase
+    .from("thumbnails")
+    .select("*")
+    .eq("category", post.category)
+    .neq("id", post.id)
+    .order("created_at", { ascending: false })
+    .limit(3)
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen">
