@@ -4,16 +4,21 @@ import { createServerSupabaseClient } from "@/lib/supabase"
 
 export default async function AdminDashboardPage() {
   const supabase = createServerSupabaseClient()
+  let thumbnailCount = 0
+  let recentThumbnails: any[] = []
 
-  // サムネイル数を取得
-  const { count: thumbnailCount } = await supabase.from("thumbnails").select("*", { count: "exact", head: true })
-
-  // 最近追加されたサムネイルを取得
-  const { data: recentThumbnails } = await supabase
-    .from("thumbnails")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(5)
+  try {
+    const { count } = await supabase.from("thumbnails").select("*", { count: "exact", head: true })
+    thumbnailCount = count || 0
+    const { data } = await supabase
+      .from("thumbnails")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(5)
+    recentThumbnails = data || []
+  } catch (e) {
+    console.error("Failed to fetch thumbnails", e)
+  }
 
   return (
     <div className="space-y-6">

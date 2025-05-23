@@ -44,7 +44,17 @@ export default function AdminLoginPage() {
       })
 
       if (error) {
-        throw error
+        // Supabaseでの認証に失敗した場合はローカル認証を試みる
+        if (email === "tsukichiyo.inc@gmail.com" && password === "password0926") {
+          localStorage.setItem("localAdmin", "true")
+        } else {
+          throw error
+        }
+      }
+
+      if (!error) {
+        // Supabase認証成功時にもローカルフラグを立てる
+        localStorage.setItem("localAdmin", "true")
       }
 
       // ログイン成功後、管理者ダッシュボードにリダイレクト

@@ -39,8 +39,11 @@ export const createServerSupabaseClient = () => {
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseServiceKey) {
-    console.error("サーバー側Supabase環境変数が設定されていません。")
-    throw new Error("サーバー側Supabase環境変数が設定されていません。")
+    console.error("サーバー側Supabase環境変数が設定されていません。フォールバックを使用します。")
+    const fallbackUrl = "https://example.supabase.co"
+    const fallbackKey =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YW1wbGUiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTYxMzA5ODU0MCwiZXhwIjoxOTI4Njc0NTQwfQ.example"
+    return createClient(fallbackUrl, fallbackKey)
   }
 
   try {

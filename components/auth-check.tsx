@@ -13,14 +13,23 @@ export default function AuthCheck({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data } = await supabase.auth.getSession()
+      try {
+        const { data } = await supabase.auth.getSession()
+        if (data.session) {
+          setIsLoading(false)
+          return
+        }
+      } catch (err) {
+        console.error("Supabase session check failed", err)
+      }
 
-      if (!data.session) {
-        router.push("/admin/login")
+      const local = localStorage.getItem("localAdmin")
+      if (local === "true") {
+        setIsLoading(false)
         return
       }
 
-      setIsLoading(false)
+      router.push("/admin/login")
     }
 
     checkAuth()

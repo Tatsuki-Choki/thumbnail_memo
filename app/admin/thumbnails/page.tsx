@@ -7,14 +7,18 @@ import { createServerSupabaseClient } from "@/lib/supabase"
 export default async function ThumbnailsPage() {
   const supabase = createServerSupabaseClient()
 
-  // サムネイル一覧を取得
-  const { data: thumbnails, error } = await supabase
-    .from("thumbnails")
-    .select("*")
-    .order("created_at", { ascending: false })
-
-  if (error) {
-    console.error("Error fetching thumbnails:", error)
+  let thumbnails: any[] = []
+  try {
+    const { data, error } = await supabase
+      .from("thumbnails")
+      .select("*")
+      .order("created_at", { ascending: false })
+    if (error) {
+      throw error
+    }
+    thumbnails = data || []
+  } catch (e) {
+    console.error("Error fetching thumbnails:", e)
   }
 
   return (
