@@ -77,8 +77,8 @@ export default async function PostPage({ params }: { params: { id: string } }) {
                         <Image
                           src={related.image_url || "/placeholder.svg"}
                           alt={related.title}
-                          width={600}
-                          height={400}
+                          width={640}
+                          height={360}
                           className="w-full object-cover transition-transform group-hover:scale-105"
                         />
                       </div>

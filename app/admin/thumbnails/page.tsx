@@ -42,7 +42,7 @@ export default async function ThumbnailsPage() {
                   key={thumbnail.id}
                   className="border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <div className="relative h-40">
+                  <div className="relative aspect-video">
                     <Image
                       src={thumbnail.image_url || "/placeholder.svg"}
                       alt={thumbnail.title}
