@@ -17,14 +17,19 @@ import Link from "next/link"
 
 // YouTube helper
 async function fetchYoutubeInfo(url: string) {
-  const res = await fetch(`/api/youtube?url=${encodeURIComponent(url)}`)
-  if (!res.ok) {
-    throw new Error("YouTube情報の取得に失敗しました")
-  }
-  return (await res.json()) as {
-    title: string
-    imageUrl: string
-    viewCount: string
+  try {
+    const res = await fetch(`/api/youtube?url=${encodeURIComponent(url)}`)
+    if (!res.ok) {
+      throw new Error("YouTube情報の取得に失敗しました")
+    }
+    return (await res.json()) as {
+      title: string
+      imageUrl: string
+      viewCount: string
+    }
+  } catch (error) {
+    console.error("YouTube API エラー:", error)
+    throw new Error("YouTube情報の取得に失敗しました。API設定を確認してください。")
   }
 }
 
@@ -39,6 +44,7 @@ export default function NewThumbnailPage() {
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [supabaseConnected, setSupabaseConnected] = useState(true)
 
   const router = useRouter()
 
@@ -85,10 +91,12 @@ export default function NewThumbnailPage() {
         ])
 
         if (error) {
+          setSupabaseConnected(false)
           throw error
         }
 
         setSuccess(true)
+        setSupabaseConnected(true)
 
         // フォームをリセット
         setTitle("")
@@ -105,6 +113,7 @@ export default function NewThumbnailPage() {
         }, 3000)
       } catch (supabaseError: any) {
         console.error("Supabase操作エラー:", supabaseError)
+        setSupabaseConnected(false)
         throw new Error("データベースへの保存に失敗しました。管理者に連絡してください。")
       }
     } catch (error: any) {
@@ -122,6 +131,14 @@ export default function NewThumbnailPage() {
           <Button variant="outline">サムネイル一覧に戻る</Button>
         </Link>
       </div>
+
+      {!supabaseConnected && (
+        <Alert className="mb-6 bg-yellow-50 border-yellow-200">
+          <AlertDescription className="text-yellow-800">
+            Supabaseに接続できません。環境変数を確認してください。現在はローカルモードで動作しています。
+          </AlertDescription>
+        </Alert>
+      )}
 
       <Card>
         <CardHeader>

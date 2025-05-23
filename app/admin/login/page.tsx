@@ -28,6 +28,10 @@ export default function AdminLoginPage() {
       // フォールバック認証（開発環境用）
       if (email === "tsukichiyo.inc@gmail.com" && password === "password0926") {
         localStorage.setItem("localAdmin", "true")
+        // クッキーにも保存（ミドルウェア用）
+        if (typeof document !== "undefined") {
+          document.cookie = "localAdmin=true; path=/; max-age=86400; SameSite=Lax"
+        }
         router.push("/admin/dashboard")
         return
       }
@@ -45,6 +49,9 @@ export default function AdminLoginPage() {
         }
 
         localStorage.setItem("localAdmin", "true")
+        if (typeof document !== "undefined") {
+          document.cookie = "localAdmin=true; path=/; max-age=86400; SameSite=Lax"
+        }
         router.push("/admin/dashboard")
       } catch (supabaseError: any) {
         console.warn("Supabase認証に失敗:", supabaseError.message)
