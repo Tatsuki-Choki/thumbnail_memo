@@ -10,7 +10,14 @@ export default function LogoutPage() {
 
   useEffect(() => {
     const logout = async () => {
-      await supabase.auth.signOut()
+      try {
+        await supabase.auth.signOut()
+      } catch (e) {
+        console.error("Supabase signOut failed", e)
+      }
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("localAdmin")
+      }
       router.push("/admin/login")
     }
 
