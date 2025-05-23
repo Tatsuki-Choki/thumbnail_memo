@@ -21,7 +21,11 @@ async function fetchYoutubeInfo(url: string) {
   if (!res.ok) {
     throw new Error("YouTube情報の取得に失敗しました")
   }
-  return (await res.json()) as { title: string; imageUrl: string }
+  return (await res.json()) as {
+    title: string
+    imageUrl: string
+    viewCount: string
+  }
 }
 
 export default function NewThumbnailPage() {
@@ -45,6 +49,7 @@ export default function NewThumbnailPage() {
       const data = await fetchYoutubeInfo(youtubeUrl)
       setTitle(data.title)
       setImageUrl(data.imageUrl)
+      setViews(data.viewCount)
     } catch (err: any) {
       setError(err.message)
     } finally {

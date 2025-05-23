@@ -56,8 +56,8 @@ export async function ThumbnailGrid({ category }: ThumbnailGridProps) {
               <Image
                 src={thumbnail.image_url || "/placeholder.svg"}
                 alt={thumbnail.title}
-                width={600}
-                height={400}
+                width={640}
+                height={360}
                 className="w-full object-cover transition-transform group-hover:scale-105"
               />
             </div>

@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "API key not configured" }, { status: 500 });
   }
   const res = await fetch(
-    `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${apiKey}`,
+    `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoId}&key=${apiKey}`,
   );
   if (!res.ok) {
     return NextResponse.json({ error: "Failed to fetch video info" }, { status: 500 });
@@ -24,11 +24,17 @@ export async function GET(req: NextRequest) {
   if (!json.items || json.items.length === 0) {
     return NextResponse.json({ error: "Video not found" }, { status: 404 });
   }
-  const snippet = json.items[0].snippet;
+  const item = json.items[0];
+  const snippet = item.snippet;
+  const viewCount = item.statistics?.viewCount || "0";
   const thumbnail =
     snippet.thumbnails?.high?.url ||
     snippet.thumbnails?.standard?.url ||
     snippet.thumbnails?.default?.url ||
     "";
-  return NextResponse.json({ title: snippet.title, imageUrl: thumbnail });
+  return NextResponse.json({
+    title: snippet.title,
+    imageUrl: thumbnail,
+    viewCount,
+  });
 }
