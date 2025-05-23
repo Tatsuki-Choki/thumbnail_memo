@@ -7,7 +7,7 @@ function formatDate(dateString: string): string {
   const now = new Date()
   const diffTime = Math.abs(now.getTime() - date.getTime())
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
-
+  
   if (diffDays === 0) {
     return "今日"
   } else if (diffDays === 1) {
@@ -21,28 +21,44 @@ function formatDate(dateString: string): string {
   }
 }
 
-
-interface ThumbnailGridProps {
+// 両方のインターフェースを統合
+export interface ThumbnailGridProps {
+  // 静的なデータを渡す場合
+  images?: { 
+    id: string
+    image_url: string
+    title: string
+    created_at: string
+    category: string
+  }[]
+  // カテゴリーで動的にフィルタする場合
   category?: string
 }
 
-export async function ThumbnailGrid({ category }: ThumbnailGridProps) {
-  const supabase = createServerSupabaseClient()
-  let query = supabase
-    .from("thumbnails")
-    .select("*")
-    .order("created_at", { ascending: false })
-
-  if (category) {
-    query = query.eq("category", category)
+export async function ThumbnailGrid({ images, category }: ThumbnailGridProps) {
+  let thumbnails = images
+  
+  // imagesが提供されていない場合は、Supabaseから取得
+  if (!thumbnails) {
+    const supabase = createServerSupabaseClient()
+    
+    let query = supabase
+      .from("thumbnails")
+      .select("*")
+      .order("created_at", { ascending: false })
+    
+    if (category) {
+      query = query.eq("category", category)
+    }
+    
+    const { data } = await query
+    thumbnails = data || []
   }
-
-  const { data: thumbnails } = await query
-
+  
   if (!thumbnails || thumbnails.length === 0) {
     return <p className="text-center text-sm text-gray-500">データがありません。</p>
   }
-
+  
   return (
     <div className="columns-1 sm:columns-2 lg:columns-3 gap-6">
       {thumbnails.map((thumbnail) => (
