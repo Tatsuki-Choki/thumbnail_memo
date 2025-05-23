@@ -1,11 +1,11 @@
 import type React from "react"
 import Image from "next/image"
 
-interface ThumbnailGridProps {
+export interface ThumbnailGridProps {
   images: { image_url: string; title: string }[]
 }
 
-const ThumbnailGrid: React.FC<ThumbnailGridProps> = ({ images }) => {
+export function ThumbnailGrid({ images }: ThumbnailGridProps) {
   return (
     <div className="grid grid-cols-3 gap-4">
       {images.map((thumbnail, index) => (
