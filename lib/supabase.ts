@@ -6,15 +6,47 @@ let clientSupabaseClient: ReturnType<typeof createClient> | null = null
 export const createClientSupabaseClient = () => {
   if (clientSupabaseClient) return clientSupabaseClient
 
-  clientSupabaseClient = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+  // 環境変数の存在確認
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-  return clientSupabaseClient
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error(
+      "Supabase環境変数が設定されていません。NEXT_PUBLIC_SUPABASE_URLとNEXT_PUBLIC_SUPABASE_ANON_KEYを確認してください。",
+    )
+    // 開発環境用のフォールバック値（本番環境では使用しないでください）
+    const fallbackUrl = "https://example.supabase.co"
+    const fallbackKey =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YW1wbGUiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTYxMzA5ODU0MCwiZXhwIjoxOTI4Njc0NTQwfQ.example"
+
+    clientSupabaseClient = createClient(fallbackUrl, fallbackKey)
+    return clientSupabaseClient
+  }
+
+  try {
+    clientSupabaseClient = createClient(supabaseUrl, supabaseAnonKey)
+    return clientSupabaseClient
+  } catch (error) {
+    console.error("Supabaseクライアントの初期化に失敗しました:", error)
+    throw new Error("Supabaseクライアントの初期化に失敗しました。環境変数を確認してください。")
+  }
 }
 
 // サーバー側のSupabaseクライアント
 export const createServerSupabaseClient = () => {
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY!,
-  )
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseServiceKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseServiceKey) {
+    console.error("サーバー側Supabase環境変数が設定されていません。")
+    throw new Error("サーバー側Supabase環境変数が設定されていません。")
+  }
+
+  try {
+    return createClient(supabaseUrl, supabaseServiceKey)
+  } catch (error) {
+    console.error("サーバー側Supabaseクライアントの初期化に失敗しました:", error)
+    throw new Error("サーバー側Supabaseクライアントの初期化に失敗しました。")
+  }
 }

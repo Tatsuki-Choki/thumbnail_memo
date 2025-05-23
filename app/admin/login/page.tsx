@@ -18,7 +18,15 @@ export default function AdminLoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const supabase = createClientSupabaseClient()
+
+  // Supabaseクライアントの初期化をtry-catchで囲む
+  let supabase
+  try {
+    supabase = createClientSupabaseClient()
+  } catch (err: any) {
+    console.error("Supabaseクライアントの初期化エラー:", err)
+    setError("認証サービスの初期化に失敗しました。管理者に連絡してください。")
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,6 +34,10 @@ export default function AdminLoginPage() {
     setError(null)
 
     try {
+      if (!supabase) {
+        throw new Error("認証サービスが利用できません。")
+      }
+
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
