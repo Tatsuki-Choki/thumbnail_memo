@@ -5,13 +5,19 @@ import { createServerSupabaseClient } from "@/lib/supabase"
 export default async function AdminDashboardPage() {
   const supabase = createServerSupabaseClient()
   let thumbnailCount = 0
-  let recentThumbnails: any[] = []
+  let recentThumbnails: Array<{
+    id: number
+    title: string
+    category: string
+    created_at: string
+    image_url?: string
+  }> = []
   let supabaseConnected = false
   let errorMessage = ""
 
   try {
     // 直接接続テストを行う
-    const { data: testData, error: testError } = await supabase.from("thumbnails").select("count").limit(1)
+    const { error: testError } = await supabase.from("thumbnails").select("count").limit(1)
 
     if (!testError) {
       supabaseConnected = true
@@ -25,10 +31,10 @@ export default async function AdminDashboardPage() {
     } else {
       errorMessage = testError.message
     }
-  } catch (e: any) {
+  } catch (e) {
     console.error("Failed to fetch thumbnails", e)
     supabaseConnected = false
-    errorMessage = e.message || "不明なエラー"
+    errorMessage = e instanceof Error ? e.message : "不明なエラー"
   }
 
   return (

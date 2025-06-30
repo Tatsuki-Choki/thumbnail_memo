@@ -114,8 +114,8 @@ function createDummyClient() {
       signOut: async () => ({ error: null }),
       getSession: async () => ({ data: { session: null }, error: null }),
     },
-    from: (table: string) => ({
-      select: (columns?: string) => ({
+    from: () => ({
+      select: () => ({
         eq: () => dummyData,
         single: () => ({ data: null, error: new Error("Supabase未設定") }),
         order: () => dummyData,

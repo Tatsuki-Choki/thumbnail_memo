@@ -40,8 +40,8 @@ class AuthManager {
       }
 
       return { user: null, error: "Invalid credentials" }
-    } catch (error: any) {
-      return { user: null, error: error.message }
+    } catch (error) {
+      return { user: null, error: error instanceof Error ? error.message : "認証エラーが発生しました" }
     }
   }
 

@@ -88,8 +88,8 @@ class SupabaseManager {
       this.isConnected = true
       this.connectionError = null
       return this.clientInstance
-    } catch (error: any) {
-      this.connectionError = error.message
+    } catch (error) {
+      this.connectionError = error instanceof Error ? error.message : "Unknown error"
       this.isConnected = false
       throw error
     }

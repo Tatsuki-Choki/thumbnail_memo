@@ -10,7 +10,13 @@ interface ThumbnailGridProps {
 }
 
 export function ThumbnailGrid({ category }: ThumbnailGridProps) {
- const [thumbnails, setThumbnails] = React.useState<any[]>([])
+ const [thumbnails, setThumbnails] = React.useState<Array<{
+   id: number
+   title: string
+   category: string
+   created_at: string
+   image_url?: string
+ }>>([])
  const [loading, setLoading] = React.useState(true)
 
  React.useEffect(() => {

@@ -57,11 +57,11 @@ export function EnhancedThumbnailGrid({ category, limit }: ThumbnailGridProps) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedItem, setSelectedItem] = useState<ThumbnailItem | null>(null)
-  const [connectionStatus, setConnectionStatus] = useState({ isConnected: false, error: null })
+  const [connectionStatus, setConnectionStatus] = useState<{ isConnected: boolean; error: string | null }>({ isConnected: false, error: null })
 
   useEffect(() => {
     fetchThumbnails()
-  }, [category, limit])
+  }, [category, limit]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchThumbnails = async () => {
     try {
@@ -88,10 +88,11 @@ export function EnhancedThumbnailGrid({ category, limit }: ThumbnailGridProps) {
 
       setThumbnails(data || [])
       setConnectionStatus({ isConnected: true, error: null })
-    } catch (err: any) {
+    } catch (err) {
       console.error("Failed to fetch thumbnails:", err)
-      setError(err.message)
-      setConnectionStatus({ isConnected: false, error: err.message })
+      const errorMessage = err instanceof Error ? err.message : "Unknown error"
+      setError(errorMessage)
+      setConnectionStatus({ isConnected: false, error: errorMessage })
 
       // Fallback to sample data for development
       if (process.env.NODE_ENV === "development") {

@@ -42,7 +42,6 @@ const getGridConfig = (width: number): GridConfig => {
 
 export function MasonryGrid({ items, onItemClick, loading = false }: MasonryGridProps) {
   const [gridConfig, setGridConfig] = useState<GridConfig>({ columns: 3, gap: 20, minItemWidth: 220 })
-  const [columnHeights, setColumnHeights] = useState<number[]>([])
   const [itemPositions, setItemPositions] = useState<Map<number, { x: number; y: number; width: number }>>(new Map())
   const containerRef = useRef<HTMLDivElement>(null)
   const itemRefs = useRef<Map<number, HTMLDivElement>>(new Map())
@@ -93,7 +92,6 @@ export function MasonryGrid({ items, onItemClick, loading = false }: MasonryGrid
       heights[shortestColumnIndex] += itemHeight + gap
     })
 
-    setColumnHeights(heights)
     setItemPositions(positions)
 
     // Calculate container height safely

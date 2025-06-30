@@ -37,8 +37,8 @@ export default function AdminLoginPage() {
         router.push("/admin/dashboard")
         router.refresh()
       }
-    } catch (error: any) {
-      setError(error.message || "ログインに失敗しました。")
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "ログインに失敗しました。")
     } finally {
       setLoading(false)
     }
